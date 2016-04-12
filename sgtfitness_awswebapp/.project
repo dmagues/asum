@@ -3,6 +3,7 @@
 	<name>sgtfitness_awswebapp</name>
 	<comment></comment>
 	<projects>
+		<project>sgtfitness_engine</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

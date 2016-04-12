@@ -2,7 +2,10 @@
     <wb-module deploy-name="sgtfitness_awswebapp">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="sgtfitness_awswebapp"/>
+        <dependent-module archiveName="sgtfitness_engine.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sgtfitness_engine/sgtfitness_engine">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/sgtfitness_awswebapp/build/classes"/>
+        <property name="context-root" value="sgtfitness"/>
     </wb-module>
 </project-modules>
