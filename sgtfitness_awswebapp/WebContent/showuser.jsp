@@ -13,6 +13,6 @@ Edad: <%= usuario.getEdad() %><BR>
 Sexo: <%= usuario.getSexo() %><BR>
 Peso: <%= usuario.getPeso() %><BR>
 Estatura: <%= usuario.getEstatura() %><BR>
-Indice de Masa Corporal: <%= usuario.getIndiceMasaCorporal() %><BR>
+Indice de Masa Corporal: <%= usuario.getIMC() %><BR>
 </body>
 </html>
