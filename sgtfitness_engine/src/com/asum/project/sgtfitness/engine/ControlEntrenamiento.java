@@ -22,21 +22,71 @@ public class ControlEntrenamiento {
 	{
 		Entrenamiento e = null;
 		this.tasaExigencia = calculaTasaExigencia(usuario);
-
-		List<ReglaEntrenamiento> reglasSeleccionadas = new ArrayList<ReglaEntrenamiento>(); 
 		
+		List<ReglaEntrenamiento> reglasSeleccionadas = new ArrayList<ReglaEntrenamiento>(); 
+		ReglaEntrenamiento regla;
 		
 		for(int t:tipos)
 		{
 			for(int st:subtipos)
 			{
-				ReglaEntrenamiento regla = reglas.stream().filter((r) -> 
-				esReglaValida(r, objetivo, dias, horas, t, st))
-						.findFirst().orElse(null);
-				
+				regla = reglas.stream().filter((r) -> esReglaValida(r, objetivo, t, st))
+						.findFirst()
+						.orElse(null);
 				
 				if (regla!=null)
+				{		
+					int d[] = regla.getActividad().getDias();
+					int N=d.length;
+					int nuevosDias = 0;
+					
+					for(int i=0; i<N; i++){
+						if (i==0)
+						{	if(d[i]>dias)
+							{nuevosDias = dias;
+							break;}
+						}
+						if (i+1<N)
+						{	if( d[i]<=dias && dias<d[i+1])
+							{ nuevosDias=d[i];
+							break;}
+						}else
+						{ nuevosDias=d[i]; }
+					}
+					
+					double h[] = regla.getActividad().getHoras();
+					N=h.length;
+					double nuevasHoras = 0;
+					int nivel = DataAccess.consultaNivelPorIMC(usuario.getIMC());
+					if (horas > h[nivel])
+					{ nuevasHoras=h[nivel];
+					}else
+					{
+						for(int i=0; i<N; i++){
+							if (i==0)
+							{	if(h[i]>horas)
+								{nuevasHoras = horas;
+								break;}
+							}
+							if (i+1<N)
+							{	if( h[i]<=horas && horas<h[i+1])
+								{nuevasHoras = h[i];
+								break;}
+							}else
+							{ nuevasHoras = h[i]; }					
+						}
+					}
+					
+					
+					
+					Actividad nuevaActividad = new Actividad(new int[]{nuevosDias}, 
+							new double[]{nuevasHoras}, 
+							regla.getActividad().getTipoActividad(), 
+							regla.getActividad().getSubtipoActividad());
+					
+					regla.setActividad(nuevaActividad);
 					reglasSeleccionadas.add(regla);
+				}
 			}
 
 		}
@@ -46,23 +96,29 @@ public class ControlEntrenamiento {
 		if(!reglasSeleccionadas.isEmpty())
 		{
 			List<Actividad> actividades = new ArrayList<Actividad>();
-			for(ReglaEntrenamiento regla:reglasSeleccionadas)
+			e =  new Entrenamiento(usuario);
+			e.setObjetivo(objetivo);
+			e.setDiasDisponible(dias);
+			e.setHorasDisponible(horas);
+			e.setPreferenciaTipoActividad(tipos);
+			e.setPreferenciaSubtipoActividad(subtipos);
+			
+			for(ReglaEntrenamiento r:reglasSeleccionadas)
 			{
 				if (tasaExigencia!=0)
 				{
-					regla.getActividad().setHoras(regla.getActividad().getHoras() * tasaExigencia);
+					double[] arrHoras = r.getActividad().getHoras();
+					for(int j=0; j<arrHoras.length; j++)
+					{
+						arrHoras[j]*=tasaExigencia;
+					}					
+					r.getActividad().setHoras(arrHoras);
 				}
-					
+							
+				actividades.add(r.getActividad());
 				
-				actividades.add(regla.getActividad());
-				e =  new Entrenamiento(usuario);
-				e.setActividades(actividades);
-				e.setObjetivo(objetivo);
-				e.setDiasDisponible(dias);
-				e.setHorasDisponible(horas);
-				e.setPreferenciaTipoActividad(tipos);
-				e.setPreferenciaSubtipoActividad(subtipos);
 			}
+			e.setActividades(actividades);
 		}
 
 		return e;
@@ -74,7 +130,7 @@ public class ControlEntrenamiento {
 
 	public double calculaTasaExigencia(Usuario usuario) {
 		
-		return DataAccess.consultarTasaExigenciaPorIMC(usuario.getIMC());
+		return DataAccess.consultaTasaExigenciaPorIMC(usuario.getIMC());
 	}
 
 	private void consultaReglas()
@@ -87,17 +143,17 @@ public class ControlEntrenamiento {
 		this.entrenamientoActual = DataAccess.consultaEntrenamientoUsuario(usuario);   
 	}
 	
-	private boolean esReglaValida(ReglaEntrenamiento r, int objetivo, int dias, double horas, 
+	private boolean esReglaValida(ReglaEntrenamiento r, int objetivo, 
 			int tipos, int subtipos)
 	{
 		return r.getObjetivo() == objetivo 
 				&& r.esRangoEdadValido(this.usuario.getEdad())
-				&& r.getActividad().getDias() >= dias
-				&& r.getActividad().getHoras() >= horas
 				&& r.getActividad().getTipoActividad()==tipos
 				&& r.getActividad().getSubtipoActividad()==subtipos;	
 		
 	}
+	
+	
 
 	public static void main(String[] args)
 	{
@@ -121,8 +177,14 @@ public class ControlEntrenamiento {
 		subtipos.add(TipoActividad.MONTAR_BICICLETA);
 			
 		
-		Entrenamiento e = control.generaEntrenamiento(Objetivos.SALUD_GENERAL, 3, 4, tipos, subtipos);
+		Entrenamiento e = control.generaEntrenamiento(Objetivos.SALUD_GENERAL, 3, 2, tipos, subtipos);
 		System.out.println(e);
+		
+		e = DataAccess.consultaEntrenamientoUsuario(usuario);
+		System.out.println(e);
+		
+		
+				
 
 	}
 

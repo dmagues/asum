@@ -95,7 +95,7 @@ public class Usuario {
 	}
 
 	public double getIMC() {		
-		return  new BigDecimal(peso/Math.sqrt(estatura))
+		return  new BigDecimal(peso/Math.pow(estatura,2))
 				.setScale(2, RoundingMode.HALF_UP)
 				.doubleValue();	
 	}

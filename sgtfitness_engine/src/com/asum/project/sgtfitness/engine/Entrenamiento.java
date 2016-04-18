@@ -1,6 +1,5 @@
 package com.asum.project.sgtfitness.engine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Entrenamiento {
@@ -13,11 +12,8 @@ public class Entrenamiento {
 	private Usuario usuario;
 	private List<Actividad> actividades;
 	private List<Actividad> resultados;
-	private double tasaResultado;
 	
 	public Entrenamiento(Usuario usuario){
-		this.resultados=new ArrayList<Actividad>();
-		this.tasaResultado=0.0;
 		this.usuario=usuario;
 	}
 
@@ -76,18 +72,13 @@ public class Entrenamiento {
 	public void setResultados(List<Actividad> resultados) {
 		this.resultados = resultados;
 	}
-	public double getTasaResultado() {
-		return tasaResultado;
-	}
-	public void setTasaResultado(double tasaResultado) {
-		this.tasaResultado = tasaResultado;
-	}
 	
 	public String toString()
 	{
 		String s="";
 		
 		s+="\nNombre: " + this.usuario.getNombre();
+		s+=String.format("\nIMC: %.2f",this.usuario.getIMC());
 		s+=String.format("\nDias disponibles: %d \tHoras Disponibles: %.2f",this.diasDisponible, this.horasDisponible);
 		s+="\nPreferencias Actividades:";
 		for(int t:preferenciaTipoActividad)
@@ -106,6 +97,27 @@ public class Entrenamiento {
 		}
 		
 		return s;
+	}
+	
+	public void evaluarEntrenamiento(){
+		
+		for(Actividad plan:actividades)
+		{
+			int dias = resultados.stream()
+					.filter(r->r.getTipoActividad()==plan.getTipoActividad()&& r.getSubtipoActividad()==plan.getSubtipoActividad())
+					.mapToInt(d->d.getDia())
+					.sum();
+			
+			double horas = resultados.stream()
+					.filter(r->r.getTipoActividad()==plan.getTipoActividad()&& r.getSubtipoActividad()==plan.getSubtipoActividad())
+					.mapToDouble(d->d.getHora())
+					.sum();
+			
+			plan.setTasaResultado((dias*horas)/(plan.getDia()*plan.getHora()));			
+			
+		}
+		
+		
 	}
 
 
