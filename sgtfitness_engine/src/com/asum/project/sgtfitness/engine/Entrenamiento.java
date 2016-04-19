@@ -4,6 +4,9 @@ import java.util.List;
 
 public class Entrenamiento {
 
+	public static final int ACTIVO=1;
+	public static final int INACTIVO=2;
+	
 	private int objetivo;
 	private int diasDisponible;
 	private double horasDisponible;
@@ -12,7 +15,16 @@ public class Entrenamiento {
 	private Usuario usuario;
 	private List<Actividad> actividades;
 	private List<Actividad> resultados;
+	private int entrenamientoId = 0;
 	
+	public int getEntrenamientoId() {
+		return entrenamientoId;
+	}
+
+	public void setEntrenamientoId(int entrenamientoId) {
+		this.entrenamientoId = entrenamientoId;
+	}
+
 	public Entrenamiento(Usuario usuario){
 		this.usuario=usuario;
 	}
@@ -77,7 +89,7 @@ public class Entrenamiento {
 	{
 		String s="";
 		
-		s+="\nNombre: " + this.usuario.getNombre();
+		s+=String.format("\nID: %d\tNombre: %s" , this.getEntrenamientoId(), this.usuario.getNombre());
 		s+=String.format("\nIMC: %.2f",this.usuario.getIMC());
 		s+=String.format("\nDias disponibles: %d \tHoras Disponibles: %.2f",this.diasDisponible, this.horasDisponible);
 		s+="\nPreferencias Actividades:";

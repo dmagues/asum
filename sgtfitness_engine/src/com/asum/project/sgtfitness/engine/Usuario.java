@@ -10,7 +10,7 @@ public class Usuario {
 	private double peso; /*kilos*/
 	private double estatura; /*metros*/
 	private int edad;
-	private char sexo;
+	private String sexo;
 	private String nombre;
 	private String login;
 	private String pwd;
@@ -47,11 +47,11 @@ public class Usuario {
 		this.edad = edad;
 	}
 
-	public char getSexo() {
+	public String getSexo() {
 		return sexo;
 	}
 
-	public void setSexo(char sexo) {
+	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
 
@@ -83,7 +83,7 @@ public class Usuario {
 	public Usuario() {		
 	}
 	
-	public Usuario(double peso, double estatura, int edad, char sexo, String nombre, String login, String pwd) {
+	public Usuario(double peso, double estatura, int edad, String sexo, String nombre, String login, String pwd) {
 		super();
 		this.peso = peso;
 		this.estatura = estatura;
@@ -98,6 +98,16 @@ public class Usuario {
 		return  new BigDecimal(peso/Math.pow(estatura,2))
 				.setScale(2, RoundingMode.HALF_UP)
 				.doubleValue();	
+	}
+	
+	public String toString()
+	{
+		String s="";
+		
+		s+= String.format("\nID: %d\tUsuario: %s\tLogin: %s", this.usuarioId, this.nombre, this.login);
+		s+= String.format("\n\tEdad: %d\tSexo: %s\tEstatura: %.2f\tPeso: %.2f\tIMC: %.2f", this.edad, this.sexo, this.estatura, this.peso, this.getIMC());
+		
+		return s;
 	}
 
 }

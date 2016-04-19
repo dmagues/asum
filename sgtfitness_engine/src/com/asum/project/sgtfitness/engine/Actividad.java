@@ -84,6 +84,14 @@ public class Actividad {
 		 
 		 return s;
 	}
+
+	public void setDia(int dias) {
+			this.dias =  new int[]{dias};		
+	}
+
+	public void setHora(double horas) {
+		this.horas =  new double[]{horas};		
+	}
 		
 
 

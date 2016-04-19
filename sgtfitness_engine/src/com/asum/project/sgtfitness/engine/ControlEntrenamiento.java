@@ -1,5 +1,6 @@
 package com.asum.project.sgtfitness.engine;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class ControlEntrenamiento {
 		consultaReglas();
 	}
 
-	public Entrenamiento generaEntrenamiento(int objetivo, int dias, double horas,
+	public void generaEntrenamiento(int objetivo, int dias, double horas,
 			List<Integer> tipos, List<Integer> subtipos) 
 	{
 		Entrenamiento e = null;
@@ -121,7 +122,10 @@ public class ControlEntrenamiento {
 			e.setActividades(actividades);
 		}
 
-		return e;
+		
+		e = DataAccess.guardaEntrenamiento(e);
+		
+		this.entrenamientoActual = e;
 	}
 
 	public Entrenamiento proponeEntrenamiento() {
@@ -135,37 +139,66 @@ public class ControlEntrenamiento {
 
 	private void consultaReglas()
 	{
-		this.reglas = DataAccess.consultaReglas();   
+		this.reglas = DataAccess.consultaReglas();
 	}
 
-	private void consultaEntrenamientoUsuario(Usuario usuario)
+	public void consultaEntrenamientoUsuario(Usuario usuario)
 	{
 		this.entrenamientoActual = DataAccess.consultaEntrenamientoUsuario(usuario);   
 	}
 	
-	private boolean esReglaValida(ReglaEntrenamiento r, int objetivo, 
-			int tipos, int subtipos)
+	private boolean esReglaValida(ReglaEntrenamiento r, int objetivo, int tipos, int subtipos)
 	{
 		return r.getObjetivo() == objetivo 
 				&& r.esRangoEdadValido(this.usuario.getEdad())
 				&& r.getActividad().getTipoActividad()==tipos
-				&& r.getActividad().getSubtipoActividad()==subtipos;	
+				&& r.getActividad().getSubtipoActividad()==subtipos;
 		
 	}
 	
+	public void finalizarEntrenamiento()
+	{
+		if(this.entrenamientoActual==null)
+			consultaEntrenamientoUsuario(this.usuario);
+		
+		DataAccess.finalizarEntrenamiento(this.entrenamientoActual);
+	}
 	
+	
+	public void guardaResultadoEntrenamiento(Date fecha, int tipo, int subtipo, double horas){
+		if(this.entrenamientoActual==null)
+			consultaEntrenamientoUsuario(this.usuario);
+		
+		DataAccess.guardaTrabajoRealizado(this.usuario.getLogin(), fecha, tipo, subtipo, horas);
+		
+	}
+	
+	public void consultaResultadosEntrenamiento()
+	{
+		if(this.entrenamientoActual==null)
+			consultaEntrenamientoUsuario(this.usuario);
+		
+		this.entrenamientoActual = DataAccess.consultaResultadosEntrenamiento(this.entrenamientoActual);
+	}
 
 	public static void main(String[] args)
 	{
 		Usuario usuario = new Usuario();
-		usuario.setEdad(22);
-		usuario.setNombre("DANIEL MAGUES");
-		usuario.setSexo('M');
-		usuario.setEstatura(1.70);
-		usuario.setPeso(80);
-		usuario.setLogin("dmagues");
-		usuario.setLogin("s3cret");
-		usuario.setUsuarioId(1000);
+		usuario.setEdad(34);
+		usuario.setNombre("JOHANNA ORDONEZ");
+		usuario.setSexo("F");
+		usuario.setEstatura(1.50);
+		usuario.setPeso(60);
+		usuario.setLogin("jordonez");
+		usuario.setPwd("s3cret");
+				
+		usuario = DataAccess.guardaUsuario(usuario);
+			
+		Usuario usuario2 = DataAccess.consultaUsuarioPorLogin("dmagues");
+		
+		System.out.println(usuario);
+		System.out.println(usuario2);
+		
 		
 		ControlEntrenamiento control = new ControlEntrenamiento(usuario);
 		
@@ -177,15 +210,27 @@ public class ControlEntrenamiento {
 		subtipos.add(TipoActividad.MONTAR_BICICLETA);
 			
 		
-		Entrenamiento e = control.generaEntrenamiento(Objetivos.SALUD_GENERAL, 3, 2, tipos, subtipos);
-		System.out.println(e);
+		control.generaEntrenamiento(Objetivos.SALUD_GENERAL, 2, 4, tipos, subtipos);
+		//System.out.println(control.getEntrenamientoActual());
 		
-		e = DataAccess.consultaEntrenamientoUsuario(usuario);
-		System.out.println(e);
+		control.consultaEntrenamientoUsuario(usuario);
+		System.out.println(control.getEntrenamientoActual());	
 		
+		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-1"), 1, 2, 2.34);
+		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-2"), 1, 2, 1.15);				
+		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-22"), 1, 1, 1.2);
 		
-				
+		control.consultaResultadosEntrenamiento();
+		control.getEntrenamientoActual().evaluarEntrenamiento();
+		
+		System.out.println(control.getEntrenamientoActual());	
+		
 
+	}
+
+	private Entrenamiento getEntrenamientoActual() {
+		// TODO Auto-generated method stub
+		return this.entrenamientoActual;
 	}
 
 }
