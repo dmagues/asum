@@ -1,9 +1,14 @@
 package com.asum.project.sgtfitness.engine;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Entrenamiento {
+public class Entrenamiento implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1588439623986434288L;
 	public static final int ACTIVO=1;
 	public static final int INACTIVO=2;
 	
@@ -17,6 +22,9 @@ public class Entrenamiento {
 	private List<Actividad> resultados;
 	private int entrenamientoId = 0;
 	
+	
+
+	
 	public int getEntrenamientoId() {
 		return entrenamientoId;
 	}
@@ -25,6 +33,8 @@ public class Entrenamiento {
 		this.entrenamientoId = entrenamientoId;
 	}
 
+	public Entrenamiento(){}
+	
 	public Entrenamiento(Usuario usuario){
 		this.usuario=usuario;
 	}
@@ -115,18 +125,22 @@ public class Entrenamiento {
 		
 		for(Actividad plan:actividades)
 		{
-			int dias = resultados.stream()
-					.filter(r->r.getTipoActividad()==plan.getTipoActividad()&& r.getSubtipoActividad()==plan.getSubtipoActividad())
-					.mapToInt(d->d.getDia())
-					.sum();
-			
-			double horas = resultados.stream()
-					.filter(r->r.getTipoActividad()==plan.getTipoActividad()&& r.getSubtipoActividad()==plan.getSubtipoActividad())
-					.mapToDouble(d->d.getHora())
-					.sum();
-			
-			plan.setTasaResultado((dias*horas)/(plan.getDia()*plan.getHora()));			
-			
+			if(resultados!=null)
+			{
+				int dias = (int) resultados.stream()
+						.filter(r->r.getTipoActividad()==plan.getTipoActividad()&& r.getSubtipoActividad()==plan.getSubtipoActividad())
+						.mapToInt(d->d.getDia())
+						.count();
+
+				double horas = resultados.stream()
+						.filter(r->r.getTipoActividad()==plan.getTipoActividad()&& r.getSubtipoActividad()==plan.getSubtipoActividad())
+						.mapToDouble(d->d.getHora())
+						.sum();
+				plan.setTasaResultado((dias*horas)/(plan.getDia()*plan.getHora()));
+			}
+			else
+				plan.setTasaResultado(0);			
+
 		}
 		
 		

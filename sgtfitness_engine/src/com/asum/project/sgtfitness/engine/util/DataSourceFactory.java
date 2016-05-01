@@ -35,9 +35,9 @@ public class DataSourceFactory {
 	 
 	 	private static Connection conn;
 		
-		public static Connection getConnection()
+		public static Connection getConnection() throws SQLException
 		{
-			if (conn==null)
+			if (conn==null || conn.isClosed())
 			{
 				DataSource ds = DataSourceFactory.getMySQLDataSource();
 				try {

@@ -67,21 +67,10 @@ public class Actividad {
 	}
 
 	public String toString(){
-		 String s = String.format("\nActividad %s\\%s", 
+		 String s = String.format("Actividad %s\\%s", 
 				TipoActividad.getNombreTipoActividad(this.tipoActividad)
 				,TipoActividad.getNombreSubtipoActividad(this.subtipoActividad)
-				);
-		 
-		 s+="\n\tDías: ";
-		 for(int d:this.getDias())
-			 s+=String.format("\t%d", d);		 
-		 
-		 s+="\n\tHoras: ";
-		 for(double h:this.getHoras())
-			 s+=String.format("\t%.2f", h);
-		 
-		 s+=String.format("\nEvaluación: %.2f%%", this.tasaResultado*100);
-		 
+				); 
 		 return s;
 	}
 

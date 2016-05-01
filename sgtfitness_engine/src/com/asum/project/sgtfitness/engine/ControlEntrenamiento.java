@@ -18,6 +18,9 @@ public class ControlEntrenamiento {
 		consultaReglas();
 	}
 
+	public ControlEntrenamiento() {
+		
+	}
 	public void generaEntrenamiento(int objetivo, int dias, double horas,
 			List<Integer> tipos, List<Integer> subtipos) 
 	{
@@ -80,6 +83,7 @@ public class ControlEntrenamiento {
 					
 					
 					
+					
 					Actividad nuevaActividad = new Actividad(new int[]{nuevosDias}, 
 							new double[]{nuevasHoras}, 
 							regla.getActividad().getTipoActividad(), 
@@ -128,8 +132,54 @@ public class ControlEntrenamiento {
 		this.entrenamientoActual = e;
 	}
 
-	public Entrenamiento proponeEntrenamiento() {
-		return null;
+	public void proponeEntrenamiento() {
+		if(this.entrenamientoActual==null)
+			return;
+		
+		Entrenamiento anterior = this.entrenamientoActual;				
+		Entrenamiento nuevo = new Entrenamiento(anterior.getUsuario());
+		finalizarEntrenamiento();
+		
+		
+		anterior.evaluarEntrenamiento();
+		
+		nuevo.setDiasDisponible(anterior.getDiasDisponible());
+		nuevo.setHorasDisponible(anterior.getHorasDisponible());
+		nuevo.setObjetivo(anterior.getObjetivo());
+		nuevo.setPreferenciaTipoActividad(anterior.getPreferenciaTipoActividad());
+		nuevo.setPreferenciaSubtipoActividad(anterior.getPreferenciaSubtipoActividad());
+				
+		List<Actividad> actividades = anterior.getActividades();
+		List<Actividad> actividadesPropuesta = new ArrayList<Actividad>();
+		
+		for(Actividad a:actividades)
+		{
+			double[] horas = calculaPropuestaHoras(a.getHoras(), a.getTasaResultado());
+			Actividad nuevaActividad = new Actividad(a.getDias(), horas, a.getTipoActividad(), a.getSubtipoActividad());
+			actividadesPropuesta.add(nuevaActividad);
+		}		
+		nuevo.setActividades(actividadesPropuesta);	
+				
+		nuevo = DataAccess.guardaEntrenamiento(nuevo);
+		this.entrenamientoActual = nuevo;
+		
+		
+		
+		
+	}
+	
+	private double[] calculaPropuestaHoras(double[] horas, double porcentaje)
+	{
+		double delta=1;
+		for(int i=0; i<horas.length; i++)
+		{
+			if(porcentaje>0.9) delta=1.10;
+			if(porcentaje<=0.9) delta=0.90;			
+			horas[i]=horas[i]*delta; 
+		}
+		
+		return horas;
+		
 	}
 
 	public double calculaTasaExigencia(Usuario usuario) {
@@ -158,29 +208,31 @@ public class ControlEntrenamiento {
 	
 	public void finalizarEntrenamiento()
 	{
-		if(this.entrenamientoActual==null)
-			consultaEntrenamientoUsuario(this.usuario);
-		
-		DataAccess.finalizarEntrenamiento(this.entrenamientoActual);
+		if(this.entrenamientoActual!=null)
+		{
+			DataAccess.finalizarEntrenamiento(this.entrenamientoActual);
+			this.entrenamientoActual=null;
+		}
 	}
 	
 	
-	public void guardaResultadoEntrenamiento(Date fecha, int tipo, int subtipo, double horas){
-		if(this.entrenamientoActual==null)
-			consultaEntrenamientoUsuario(this.usuario);
+	public void guardaResultadoEntrenamiento(String login, Date fecha, int tipo, int subtipo, double horas){
 		
-		DataAccess.guardaTrabajoRealizado(this.usuario.getLogin(), fecha, tipo, subtipo, horas);
+		DataAccess.guardaTrabajoRealizado(login, fecha, tipo, subtipo, horas);
 		
 	}
 	
 	public void consultaResultadosEntrenamiento()
 	{
-		if(this.entrenamientoActual==null)
-			consultaEntrenamientoUsuario(this.usuario);
-		
-		this.entrenamientoActual = DataAccess.consultaResultadosEntrenamiento(this.entrenamientoActual);
+		if (this.entrenamientoActual!=null) 
+			DataAccess.consultaResultadosEntrenamiento(this.entrenamientoActual);
 	}
 
+	public void evaluarEntrenamiento()
+	{
+		if (this.entrenamientoActual!=null) 
+			this.entrenamientoActual.evaluarEntrenamiento();
+	}
 	public static void main(String[] args)
 	{
 		Usuario usuario = new Usuario();
@@ -216,9 +268,9 @@ public class ControlEntrenamiento {
 		control.consultaEntrenamientoUsuario(usuario);
 		System.out.println(control.getEntrenamientoActual());	
 		
-		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-1"), 1, 2, 2.34);
-		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-2"), 1, 2, 1.15);				
-		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-22"), 1, 1, 1.2);
+//		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-1"), 1, 2, 2.34);
+//		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-2"), 1, 2, 1.15);				
+//		control.guardaResultadoEntrenamiento(Date.valueOf("2016-1-22"), 1, 1, 1.2);
 		
 		control.consultaResultadosEntrenamiento();
 		control.getEntrenamientoActual().evaluarEntrenamiento();
@@ -228,7 +280,7 @@ public class ControlEntrenamiento {
 
 	}
 
-	private Entrenamiento getEntrenamientoActual() {
+	public Entrenamiento getEntrenamientoActual() {
 		// TODO Auto-generated method stub
 		return this.entrenamientoActual;
 	}

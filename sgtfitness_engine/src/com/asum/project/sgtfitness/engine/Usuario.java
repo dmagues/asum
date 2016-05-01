@@ -2,8 +2,14 @@ package com.asum.project.sgtfitness.engine;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.io.Serializable;
 
-public class Usuario {
+public class Usuario implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4947537528967711524L;
 
 	private int usuarioId;
 	
