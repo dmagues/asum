@@ -4,11 +4,11 @@ GENERAL
 body {
 	margin: 0;
 	padding: 0;
-	font: 12px/1.4em "Lucida Grande", Verdana, sans-serif;
+	font: 14px/1.4em "Lucida Grande", Verdana, sans-serif;
 	color: #333;
 	overflow-y: scroll;
 	text-rendering: optimizeLegibility;
-	background-color: #d5e9ed;
+	background-color: #99FF99;
 }
 
 h2 {
@@ -25,6 +25,9 @@ h2 {
 	background-repeat: no-repeat;
 }
 
+em{
+	color: red;
+}
 
 /*************************************
 SECTIONS
@@ -33,7 +36,7 @@ div#content {
 	margin: 30px auto;
 	padding: 0 30px 15px 30px;
 	background-color: #fff;
-	width: 940px;
+	width: 90%;
 	
 	/* box-shadow */
 	-moz-box-shadow: 0 5px 10px #aaa;
@@ -65,9 +68,9 @@ div#content {
 CONTAINERS
 *************************************/
 .container {
-	zoom: 2;
 	display: table;		
 	margin: 10px auto;
+	width: 80%
 	
 }
 
@@ -76,24 +79,12 @@ CONTAINERS
    
     }
 
- .left, .right, .middle {
+ .cell{
     display: table-cell;
     }
- .left
- {
- 	width: 50px;
- }
- .middle
- {
- 	text-align: center;
- 	
- }
+ 
+/***********************************
+VALIDATORS
+**************************************/
 
-
-/*************************************
-GRIDS
-*************************************/
-.grid { float: left; margin-right: 20px; }
-.gridlast { margin-right: 0; }
-.grid5 { width: 300px; }
-.grid15 { width: 940px; }
+label.error{display:none;}
