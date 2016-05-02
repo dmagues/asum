@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="js/common.js" type="text/javascript"></script>
 <link href="styles/styles.css" rel="Stylesheet" type="text/css">
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
 

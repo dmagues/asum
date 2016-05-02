@@ -26,7 +26,37 @@ $(function() {
     $( "#preference" ).click(function() {
       $( "#dialog" ).dialog( "open" );
     });
+    
+   
   });
+
+
+$(function() {
+    $( "#dialog-data" ).dialog({
+      autoOpen: false,
+      modal: true,
+      show: {
+          effect: "fade",
+          duration: 500
+        },
+        hide: {
+          effect: "fade",
+          duration: 500
+        },
+      buttons: {
+        Ok: function() {
+          $( this ).dialog( "close" );
+        	}
+    	}
+    });
+    
+    $( "#data" ).click(function() {
+        $( "#dialog-data" ).dialog( "open" );
+      });    
+   
+  });
+
+
 
 $(function() {
     $( "#dialog-confirm" ).dialog({

@@ -15,9 +15,9 @@
 
 </head>
 <body>
-<img style="position: absolute; right: 5%; top: 10px; width: 150px; height: 80px" alt="logo" src="images\logo.jpg" />
+<a href="index.jsp" id="inicio"><img style="position: absolute; right: 5%; top: 10px; width: 150px; height: 80px" alt="logo" src="images\logo.jpg" /></a>
 <h1>Sargento Fitness</h1>
-<h2>Hola <%= unUsuario.getNombre() %>.</h2>
+<h2>Hola <%= unUsuario.getNombre() %>  <a href="#" id="data"><img src="images/icon-personal-info.png" style="width: 25px; height: 20px" alt="Datos personales"/></a></h2>
 <br/>
 
 <div id="content">
@@ -68,6 +68,20 @@
 	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 		¿Vamos a terminar el entrenamiento?</p>
 </div>
+
+
+<div id="dialog-data" title="Tus Datos Personales">
+	<div class="container">
+		<div class="row"><%= String.format("Edad: %d", unUsuario.getEdad()) %></div>
+		<div class="row"><%= String.format("Sexo: %s", unUsuario.getSexo()) %></div>
+		<div class="row"><%= String.format("Estatura: %.2f m.", unUsuario.getEstatura()) %></div>
+		<div class="row"><%= String.format("Peso: %.2f kg.", unUsuario.getPeso()) %></div>
+		<div class="row"><%= String.format("IMC: %.2f", unUsuario.getIMC()) %></div>
+	</div>
+</div>
+
+
+
 </div>
 </body>
 </html>
