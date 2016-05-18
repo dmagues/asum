@@ -10,7 +10,7 @@ import org.mariadb.jdbc.MariaDbDataSource;
 public class DataSourceFactory {
 
 	
-	private static final String CONNECTIONURL = "jdbc:mysql://aa252tbwaejqy2.cybnfr6pktxx.us-west-2.rds.amazonaws.com";
+	private static final String CONNECTIONURL = "jdbc:mysql://localhost:3306";
 	private static MariaDbDataSource mysqlDS=null;
 	
 	 public static DataSource getMySQLDataSource() {
@@ -22,8 +22,8 @@ public class DataSourceFactory {
 				{
 					mysqlDS = new MariaDbDataSource(CONNECTIONURL);
 		            mysqlDS.setDatabaseName("asum_project");
-		            mysqlDS.setUser("asum");
-		            mysqlDS.setPassword("AsumProject2016");	
+		            mysqlDS.setUser("root");
+		            mysqlDS.setPassword("");	
 				}
 				return mysqlDS;
 				
